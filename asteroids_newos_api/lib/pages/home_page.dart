@@ -1,27 +1,31 @@
+import 'package:asteroids_newos_api/services/neows_services.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
-  Future<void> getFeed() async {
-    final response = await http.get(Uri.parse(
-        'https://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&api_key=DEMO_KEY'));
-    print(response.body);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final neowsServices = Provider.of<NeoWsServices>(context);
     return Container(
       alignment: Alignment.center,
       child: Column(children: [
         ElevatedButton(
             onPressed: () async {
-              await getFeed();
+              await neowsServices.getFeed('2015-09-07', '2015-09-08');
             },
-            child: Text('Feed')),
-        ElevatedButton(onPressed: () {}, child: Text('Lookup')),
-        ElevatedButton(onPressed: () {}, child: Text('Browse')),
+            child: const Text('Feed')),
+        ElevatedButton(
+            onPressed: () async {
+              await neowsServices.getLookup('3542519');
+            },
+            child: const Text('Lookup')),
+        ElevatedButton(
+            onPressed: () async {
+              await neowsServices.getBrowse();
+            },
+            child: const Text('Browse')),
       ]),
     );
   }
